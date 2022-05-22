@@ -30,6 +30,8 @@ import {
   uniq,
   values
 } from "ramda";
+import Link from 'next/link'
+
 
 interface HomeProps {
   decks?: Record<string, ConstellationCardDeck>;
@@ -52,7 +54,7 @@ const Stack = ({ stack, cards }: StackProps) => {
   return (
     <Grid item xs={4} key={stack.uid}>
       <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-        {stack.name}
+        <Link href={`/stacks/${stack.uid}`}>{stack.name}</Link>
       </Typography>
       <List dense={false}>
         {map((cardUid) => {
@@ -62,7 +64,7 @@ const Stack = ({ stack, cards }: StackProps) => {
               ? card.front.name
               : `${card.front.name} / ${card.back.name}`;
           return (
-            <ListItem>
+            <ListItem component={'a'} href={`/cards/${card.uid}`}>
               <ListItemAvatar>
                 <ArrowRightIcon />
               </ListItemAvatar>
