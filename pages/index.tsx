@@ -31,6 +31,7 @@ import {
   values
 } from "ramda";
 import Link from 'next/link'
+import ConstellationCardsLayout from "../src/ConstellationCardsLayout";
 
 
 interface HomeProps {
@@ -112,16 +113,17 @@ const Home: NextPage = (props: HomeProps) => {
     ? props.cards
     : {};
 
-  // TODO: app bar
   return (
-    <Container maxWidth="xl" disableGutters={false}>
-      {map(
-        (deck) => (
-          <Deck deck={deck} stacks={stacks} cards={cards} />
-        ),
-        values(decks)
-      )}
-    </Container>
+    <ConstellationCardsLayout meta={{title: 'Constellation Cards', description: 'The homepage of the Constellation Cards tabletop roleplaying game'}}>
+      <Container maxWidth="xl" disableGutters={false}>
+        {map(
+          (deck) => (
+            <Deck deck={deck} stacks={stacks} cards={cards} key={deck.uid} />
+          ),
+          values(decks)
+        )}
+      </Container>
+    </ConstellationCardsLayout>
   );
 };
 

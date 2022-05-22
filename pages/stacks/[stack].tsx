@@ -5,6 +5,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { filter, find, includes, map, pluck, propEq, values } from "ramda";
 
 import CardGrid from "../../src/CardGrid";
+import ConstellationCardsLayout from "../../src/ConstellationCardsLayout";
 
 interface StackProps {
     stack?: ConstellationCardStack,
@@ -13,10 +14,12 @@ interface StackProps {
 
 const StackPage: NextPage = (props: StackProps) => {
     return (
-      <Container maxWidth="xl" disableGutters={false}>
-          <h1>{props?.stack?.name}</h1>
-          <CardGrid cards={props.cards || []} />
-      </Container>
+      <ConstellationCardsLayout meta={{title: props.stack?.name, description: `${props.stack?.name} stack in Constellation Cards`}}>
+        <Container maxWidth="xl" disableGutters={false}>
+            <h1>{props?.stack?.name}</h1>
+            <CardGrid cards={props.cards || []} />
+        </Container>
+      </ConstellationCardsLayout>
     );
   };
 

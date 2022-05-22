@@ -4,6 +4,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { find, map, pluck, propEq } from "ramda";
 
 import CardGrid from "../../src/CardGrid";
+import ConstellationCardsLayout from "../../src/ConstellationCardsLayout";
 
 interface CardProps {
     card?: ConstellationCard
@@ -13,10 +14,12 @@ const CardPage: NextPage = (props: CardProps) => {
   const card: ConstellationCard = props.card as ConstellationCard
   const cardName = (card.front?.name === card.back?.name) ? card.front.name : `${card.front.name} / ${card.back.name}`
     return (
-      <Container maxWidth="xl" disableGutters={false}>
-          <h1>{cardName}</h1>
-          <CardGrid cards={[card]} />
-      </Container>
+      <ConstellationCardsLayout meta={{title: cardName, description: `${cardName} card in Constellation Cards`}}>
+        <Container maxWidth="xl" disableGutters={false}>
+            <h1>{cardName}</h1>
+            <CardGrid cards={[card]} />
+        </Container>
+      </ConstellationCardsLayout>
     );
   };
 
