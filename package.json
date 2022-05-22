@@ -9,18 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@constellation-cards/cards": "^1.0.5",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.8.0",
+    "@mui/material": "^5.8.0",
     "dotenv": "^16.0.1",
     "next": "12.1.6",
     "next-auth": "^4.3.4",
+    "ramda": "^0.28.0",
     "react": "18.1.0",
     "react-dom": "18.1.0"
   },
   "devDependencies": {
     "@types/node": "17.0.35",
+    "@types/ramda": "^0.28.13",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.4",
     "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
+    "prettier": "^2.6.2",
     "typescript": "4.6.4"
   }
 }
