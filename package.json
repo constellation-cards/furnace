@@ -21,13 +21,15 @@
     "next-auth": "^4.3.4",
     "ramda": "^0.28.0",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "react-gravatar": "^2.6.3"
   },
   "devDependencies": {
     "@types/node": "17.0.35",
     "@types/ramda": "^0.28.13",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.4",
+    "@types/react-gravatar": "^2.6.10",
     "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
     "prettier": "^2.6.2",

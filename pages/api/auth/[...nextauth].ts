@@ -6,7 +6,7 @@ export default NextAuth({
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "username" },
+        username: { label: "Email address", type: "text" },
         password: {  label: "Password", type: "password" }
       },
       async authorize(credentials, _req) {
@@ -14,7 +14,7 @@ export default NextAuth({
           const user = {
             id: 1,
             name: credentials?.username,
-            email: ""
+            email: credentials?.username
           }
           return user
         } else {

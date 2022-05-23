@@ -1,10 +1,17 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { signIn, signOut, useSession } from "next-auth/react"
 import * as React from 'react';
+import Gravatar from 'react-gravatar';
 
 interface LinkListElement {
   label: string;
   href: string;
+}
+
+interface SettingsElement {
+  label: string;
+  onClick: any;
 }
 
 const pages: LinkListElement[] = [
@@ -23,6 +30,23 @@ const settings = ['Logout'];
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const { data: session } = useSession()
+
+  const gravatarEmail = session?.user?.email || undefined;
+
+  const settings: SettingsElement[] = []
+  if (session) {
+    settings.push({
+      label: 'Sign out',
+      onClick: () => signOut()
+    })
+  } else {
+    settings.push({
+      label: 'Sign in',
+      onClick: () => signIn()
+    })
+  }
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -128,9 +152,9 @@ const ResponsiveAppBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={`Logged in as ${session?.user?.name}`}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {gravatarEmail ? <Gravatar email={gravatarEmail} /> : <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />}
               </IconButton>
             </Tooltip>
             <Menu
@@ -150,8 +174,8 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                <MenuItem key={setting.label} onClick={setting.onClick}>
+                  <Typography textAlign="center">{setting.label}</Typography>
                 </MenuItem>
               ))}
             </Menu>
