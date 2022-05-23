@@ -21,7 +21,7 @@ const pages: LinkListElement[] = [
   },
   {
     label: 'Rules',
-    href: 'rules'
+    href: '/rules'
   },
 ]
 

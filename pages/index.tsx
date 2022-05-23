@@ -65,7 +65,7 @@ const Stack = ({ stack, cards }: StackProps) => {
               ? card.front.name
               : `${card.front.name} / ${card.back.name}`;
           return (
-            <ListItem component={'a'} href={`/cards/${card.uid}`}>
+            <ListItem component={'a'} href={`/cards/${card.uid}`} key={card.uid}>
               <ListItemAvatar>
                 <ArrowRightIcon />
               </ListItemAvatar>
