@@ -1,8 +1,7 @@
 import { ConstellationCard, ConstellationCardStack, getCards, getStacks } from "@constellation-cards/cards";
-import { Deck } from "@mui/icons-material";
 import { Container } from "@mui/material";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { filter, find, includes, map, pluck, propEq, values } from "ramda";
+import { filter, find, includes, map, pluck, propEq } from "ramda";
 
 import CardGrid from "../../src/CardGrid";
 import ConstellationCardsLayout from "../../src/ConstellationCardsLayout";

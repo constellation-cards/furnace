@@ -93,7 +93,7 @@ const Deck = ({ deck, stacks, cards }: DeckProps) => {
       <Grid container spacing={2} key={deck.uid}>
         {map(
           (stack) => (
-            <Stack stack={stack} cards={cards} />
+            <Stack stack={stack} cards={cards} key={stack.uid} />
           ),
           values(stacksInThisDeck)
         )}
