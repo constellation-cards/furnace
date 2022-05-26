@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.0",
     "@next/mdx": "^12.1.6",
+    "@premieroctet/next-crud": "^2.2.0",
     "@prisma/client": "^3.14.0",
     "dotenv": "^16.0.1",
     "next": "12.1.6",
