@@ -1,13 +1,20 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type Data = {
-  name: string
-}
+import { PrismaClient } from '@prisma/client'
 
-export default function handler(
+const prisma = new PrismaClient()
+
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  try {
+    const data = await prisma.sessions_v1.findMany();
+    res.status(200).json(data)
+  } catch (err) {
+    res.status(500).json({err})
+  } finally {
+    await prisma.$disconnect()
+  }
 }
