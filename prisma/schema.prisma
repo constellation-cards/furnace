@@ -7,11 +7,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Session {
-  gameid     String    @id @db.VarChar(255)
-  gamestate  Json
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  updated_at DateTime? @default(now()) @db.Timestamp(6)
+model GameSession {
+  gameid            String    @id @db.VarChar(255)
+  gamestate         Json
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
 
-  @@map("sessions_v1")
+model Deck {
+  uid               String    @id @db.Uuid @default(uuid())
+  name              String    @db.VarChar(255)
+  cards             Card[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Stack {
+  uid               String    @id @db.Uuid @default(uuid())
+  name              String    @db.VarChar(255)
+  cards             Card[]
+  icons             String[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Face {
+  uid               String    @id @db.Uuid @default(uuid())
+  name              String    @db.VarChar(255)
+  backgroundImage   String?
+  description       String?
+  prompts           String[]
+  rule              String?
+  card_front        Card?     @relation(name: "front_face")
+  card_back         Card?     @relation(name: "back_face")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Card {
+  uid               String    @id @db.Uuid @default(uuid())
+  deck              Deck      @relation(fields: [deckId], references: [uid], onDelete: Restrict)
+  stack             Stack     @relation(fields: [stackId], references: [uid], onDelete: Restrict)
+  front             Face      @relation(name: "front_face", fields: [frontId], references: [uid], onDelete: Cascade)
+  back              Face      @relation(name: "back_face", fields: [backId], references: [uid], onDelete: Cascade)
+  deckId            String    @db.Uuid
+  stackId           String    @db.Uuid
+  frontId           String    @db.Uuid
+  backId            String    @db.Uuid
+  quantity          Int       @default(1)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
