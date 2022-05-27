@@ -15,7 +15,7 @@ async function insertDecks(decks: ConstellationCardDeck[]) {
       name: deck.name
     }
     const result = await prisma.deck.create({data})
-    deckIdMapping[deck.uid as string] = result.uid
+    deckIdMapping[deck.uid as string] = result.id
   }
 
   return deckIdMapping
@@ -31,7 +31,7 @@ async function insertStacks(stacks: ConstellationCardStack[]) {
       icons: stack.icons as string[]
     }
     const result = await prisma.stack.create({data})
-    stackIdMapping[stack.uid as string] = result.uid
+    stackIdMapping[stack.uid as string] = result.id
   }
 
   return stackIdMapping
@@ -41,10 +41,10 @@ async function insertCards(cards: ConstellationCard[], deckIdMapping: Record<str
   for (let card of cards) {
     const data: Prisma.CardCreateInput = {
       deck: {
-        connect: { uid: deckIdMapping[card.deck] }
+        connect: { id: deckIdMapping[card.deck] }
       },
       stack: {
-        connect: { uid: stackIdMapping[card.stack] }
+        connect: { id: stackIdMapping[card.stack] }
       },
       quantity: card.quantity,
       front: {

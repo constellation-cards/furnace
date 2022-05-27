@@ -15,7 +15,7 @@ model GameSession {
 }
 
 model Deck {
-  uid               String    @id @db.Uuid @default(uuid())
+  id                String    @id @db.Uuid @default(uuid())
   name              String    @db.VarChar(255)
   cards             Card[]
   createdAt         DateTime  @default(now())
@@ -23,7 +23,7 @@ model Deck {
 }
 
 model Stack {
-  uid               String    @id @db.Uuid @default(uuid())
+  id                String    @id @db.Uuid @default(uuid())
   name              String    @db.VarChar(255)
   cards             Card[]
   icons             String[]
@@ -32,7 +32,7 @@ model Stack {
 }
 
 model Face {
-  uid               String    @id @db.Uuid @default(uuid())
+  id                String    @id @db.Uuid @default(uuid())
   name              String    @db.VarChar(255)
   backgroundImage   String?
   description       String?
@@ -45,11 +45,11 @@ model Face {
 }
 
 model Card {
-  uid               String    @id @db.Uuid @default(uuid())
-  deck              Deck      @relation(fields: [deckId], references: [uid], onDelete: Restrict)
-  stack             Stack     @relation(fields: [stackId], references: [uid], onDelete: Restrict)
-  front             Face      @relation(name: "front_face", fields: [frontId], references: [uid], onDelete: Cascade)
-  back              Face      @relation(name: "back_face", fields: [backId], references: [uid], onDelete: Cascade)
+  id                String    @id @db.Uuid @default(uuid())
+  deck              Deck      @relation(fields: [deckId], references: [id], onDelete: Restrict)
+  stack             Stack     @relation(fields: [stackId], references: [id], onDelete: Restrict)
+  front             Face      @relation(name: "front_face", fields: [frontId], references: [id], onDelete: Cascade)
+  back              Face      @relation(name: "back_face", fields: [backId], references: [id], onDelete: Cascade)
   deckId            String    @db.Uuid
   stackId           String    @db.Uuid
   frontId           String    @db.Uuid
