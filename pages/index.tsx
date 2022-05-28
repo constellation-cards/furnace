@@ -25,7 +25,6 @@ import {
   map,
   pluck,
   propEq,
-  propOr,
   reduce,
   uniq,
   values
