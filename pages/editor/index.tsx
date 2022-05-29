@@ -1,30 +1,35 @@
-import { Container, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Button, Container, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import useSWR from "swr";
 
 import type { NextPage } from "next";
 import ConstellationCardsLayout from "../../src/ConstellationCardsLayout";
-import { filter, map, pluck, uniq } from "ramda";
+import { filter, identity, includes, map, pathEq, pipe, pluck, uniq } from "ramda";
 import { useState } from "react";
 
 export const ALL_CARDS_QUERY = "/api/cards?include=front,back,deck,stack";
 
-interface HomeProps {
+interface EditorProps {
   children?: JSX.Element;
 }
 
+// TODO: strong typing for retrieved card
+
 export const fetcher = (apiPath: string) =>
-  fetch(apiPath).then((res) => res.json());
+  fetch(apiPath).then((res: any) => res.json() as any[]);
 
 const cardName = (card: any) => (card.front.name === card.back.name) ? card.front.name : `${card.front.name} / ${card.back.name}`
 
-const filteredCards = (cards: any, selectedDeck: string | undefined | null, selectedStack: string | undefined | null): any[] => 
-  filter((card: any) => (
-    (!selectedDeck || (selectedDeck == card.deck.id)) &&
-    (!selectedStack || (selectedStack == card.stack.id))
-  ), cards)
+const searchSpace = (card: any) => [card.front.name, card.front.description, ...card.front.prompts, card.front.rule, card.back.name, card.back.description, ...card.back.prompts, card.back.rule].join('\u0000').toLowerCase()
 
-const Editor: NextPage = (props: HomeProps) => {
-  const { data, error } = useSWR(ALL_CARDS_QUERY, fetcher);
+const filterCards = (selectedSearch: string, selectedDeck: string, selectedStack: string) => pipe(
+  selectedStack ? filter(pathEq(['stack', 'id'], selectedStack)) : identity,
+  selectedDeck ? filter(pathEq(['deck', 'id'], selectedDeck)) : identity,
+  selectedSearch ? filter((card) => includes(selectedSearch, searchSpace(card))) : identity
+)
+
+const Editor: NextPage = (_props: EditorProps) => {
+  const { data, error} = useSWR(ALL_CARDS_QUERY, fetcher);
+  const [selectedSearch, selectSearch] = useState('')
   const [selectedDeck, selectDeck] = useState('')
   const [selectedStack, selectStack] = useState('')
 
@@ -46,7 +51,7 @@ const Editor: NextPage = (props: HomeProps) => {
           <>
             <Grid container>
               <Grid item xs={6}>
-                TODO filter by name
+                <TextField id="outlined-basic" fullWidth label="Text search" variant="outlined" value={selectedSearch} onChange={(event: any) => selectSearch(event.target.value)} />
               </Grid>
               <Grid item xs={3}>
                 <FormControl fullWidth>
@@ -97,7 +102,7 @@ const Editor: NextPage = (props: HomeProps) => {
                         <TableCell align="center">{card.quantity}</TableCell>
                       </TableRow>
                     ),
-                    filteredCards(data, selectedDeck, selectedStack)
+                    filterCards(selectedSearch.toLowerCase(), selectedDeck, selectedStack)(data)
                   )}
                 </TableBody>
               </Table>
