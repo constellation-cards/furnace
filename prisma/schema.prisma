@@ -3,58 +3,58 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-model GameSession {
-  gameid            String    @id @db.VarChar(255)
-  gamestate         Json
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+model ConstellationCardDeck {
+  uid               String                  @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  cards             ConstellationCard[]
 }
 
-model Deck {
-  id                String    @id @db.Uuid @default(uuid())
-  name              String    @db.VarChar(255)
-  cards             Card[]
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-}
-
-model Stack {
-  id                String    @id @db.Uuid @default(uuid())
-  name              String    @db.VarChar(255)
-  cards             Card[]
+model ConstellationCardStack {
+  uid               String                  @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
   icons             String[]
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  cards             ConstellationCard[]
+  presetSources     ConstellationCardPresetSource[]
+  state             Json
 }
 
-model Face {
-  id                String    @id @db.Uuid @default(uuid())
-  name              String    @db.VarChar(255)
-  backgroundImage   String?
-  description       String?
+model ConstellationCard {
+  uid               String                  @id @default(auto()) @map("_id") @db.ObjectId
+  deck              ConstellationCardDeck   @relation(fields: [deckId], references: [uid])
+  deckId            String                  @db.ObjectId
+  stack             ConstellationCardStack  @relation(fields: [stackId], references: [uid])
+  stackId           String                  @db.ObjectId
+  front             ConstellationCardFace
+  back              ConstellationCardFace
+  quantity          Int                     @default(1)
+  state             Json
+}
+
+type ConstellationCardFace {
+  name              String
+  backgroundImage   String
+  description       String
   prompts           String[]
-  rule              String?
-  card_front        Card?     @relation(name: "front_face")
-  card_back         Card?     @relation(name: "back_face")
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  rule              String
 }
 
-model Card {
-  id                String    @id @db.Uuid @default(uuid())
-  deck              Deck      @relation(fields: [deckId], references: [id], onDelete: Restrict)
-  stack             Stack     @relation(fields: [stackId], references: [id], onDelete: Restrict)
-  front             Face      @relation(name: "front_face", fields: [frontId], references: [id], onDelete: Cascade)
-  back              Face      @relation(name: "back_face", fields: [backId], references: [id], onDelete: Cascade)
-  deckId            String    @db.Uuid
-  stackId           String    @db.Uuid
-  frontId           String    @db.Uuid
-  backId            String    @db.Uuid
-  quantity          Int       @default(1)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+model ConstellationCardPreset {
+  uid               String                  @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  description       String
+  sources           ConstellationCardPresetSource[]
+}
+
+model ConstellationCardPresetSource {
+  uid               String                  @id @default(auto()) @map("_id") @db.ObjectId
+  preset            ConstellationCardPreset @relation(fields: [presetId], references: [uid])
+  presetId          String                  @db.ObjectId
+  stack             ConstellationCardStack  @relation(fields: [stackId], references: [uid])
+  stackId           String                  @db.ObjectId
+  quantity          Int
+  flipRule          String
 }
