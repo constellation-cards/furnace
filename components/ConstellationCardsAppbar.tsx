@@ -15,11 +15,11 @@ interface SettingsElement {
 const pages: LinkListElement[] = [
   {
     label: "Cards",
-    href: "/"
+    href: "/all-cards/"
   },
   {
     label: "Rules",
-    href: "/rules"
+    href: "/rules/"
   }
 ];
 
@@ -34,7 +34,7 @@ const settings = ["Logout"];
  *
  * @returns
  */
-const ResponsiveAppBar = () => {
+export default function ConstellationCardsAppbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -75,37 +75,36 @@ const ResponsiveAppBar = () => {
   };
 
   return (
-    <div>
-      <div>
-        <h3>Constellation Cards</h3>
-        <div>
-          {pages.map((page) => (
-            <a key={page.href} href={page.href}>
-              <div>{page.label}</div>
-            </a>
-          ))}
+    <>
+      <nav className="navbar is-info" role="navigation" aria-label="main navigation">
+        <div className="navbar-brand">
+          <a className="navbar-item" href="/">
+            Constellation Cards
+          </a>
+          <div
+            className="navbar-burger"
+            data-target="navbarExampleTransparentExample"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
 
-        <div>
-          <div title={`Logged in as ${session?.user?.name}`}>
-            <div onClick={handleOpenUserMenu}>
-              {gravatarEmail ? (
-                <Gravatar email={gravatarEmail} />
-              ) : (
-                <img alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              )}
-            </div>
-          </div>
-          <div id="menu-appbar">
-            {settings.map((setting) => (
-              <div key={setting.label} onClick={setting.onClick}>
-                <div>{setting.label}</div>
-              </div>
+        <div className="navbar-menu">
+          <div className="navbar-start">
+            {pages.map((linkListElement) => (
+              <a
+                className="navbar-item"
+                href={linkListElement.href}
+                key={linkListElement.href}
+              >
+                {linkListElement.label}
+              </a>
             ))}
           </div>
         </div>
-      </div>
-    </div>
+      </nav>
+    </>
   );
-};
-export default ResponsiveAppBar;
+}

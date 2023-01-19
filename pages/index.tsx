@@ -21,6 +21,7 @@ import {
 import Link from 'next/link'
 import ConstellationCardsLayout from "../components/ConstellationCardsLayout";
 
+import styles from "../styles/Home.module.sass"
 
 interface HomeProps {
   decks?: Record<string, ConstellationCardDeck>;
@@ -41,11 +42,12 @@ interface StackProps {
 
 const Stack = ({ stack, cards }: StackProps) => {
   return (
-    <div key={stack.uid}>
-      <div>
+    <div key={stack.uid} className="content">
+      <strong>
         <Link href={`/stacks/${stack.uid}`}>{stack.name}</Link>
-      </div>
-      <div>
+      </strong>
+      :&nbsp;
+      <span>
         {map((cardUid) => {
           const card = cards[cardUid];
           const cardName: string =
@@ -53,12 +55,14 @@ const Stack = ({ stack, cards }: StackProps) => {
               ? card.front.name
               : `${card.front.name} / ${card.back.name}`;
           return (
-            <a href={`/cards/${card.uid}`} key={card.uid}>
-              <div>{cardName}</div>
-            </a>
+            <span className={styles.card_list}>
+              <Link href={`/cards/${card.uid}`} key={card.uid}>
+                {cardName}
+              </Link>
+            </span>
           );
         }, stack.cards)}
-      </div>
+      </span>
     </div>
   );
 };
@@ -73,7 +77,7 @@ const Deck = ({ deck, stacks, cards }: DeckProps) => {
 
   return (
     <div>
-      <h1>{deck.name}</h1>
+      <h1 className="title">{deck.name}</h1>
 
       <div key={deck.uid}>
         {map(
