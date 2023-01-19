@@ -1,5 +1,4 @@
 import { ConstellationCard, getCards } from "@constellation-cards/cards";
-import { Container } from "@mui/material";
 import { GetStaticProps, NextPage } from "next";
 
 import CardGrid from "../src/CardGrid";
@@ -8,12 +7,20 @@ interface AllCardsProps {
     cards?: ConstellationCard[];
 }
 
+/**
+ * Show all cards.
+ * 
+ * TODO: refactor to use Bulma
+ * 
+ * @param props 
+ * @returns 
+ */
 const AllCardsPage: NextPage = (props: AllCardsProps) => {
     return (
-      <Container maxWidth="xl" disableGutters={false}>
+      <div>
           <h1>All Cards</h1>
           <CardGrid cards={props.cards || []} />
-      </Container>
+      </div>
     );
   };
 

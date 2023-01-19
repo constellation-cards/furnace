@@ -1,5 +1,4 @@
 import { ConstellationCard, getCards } from "@constellation-cards/cards";
-import { Container } from "@mui/material";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { find, map, pluck, propEq } from "ramda";
 
@@ -10,15 +9,21 @@ interface CardProps {
     card?: ConstellationCard
 }
 
+/**
+ * The card database page for showing a single card.
+ * 
+ * @param props 
+ * @returns 
+ */
 const CardPage: NextPage = (props: CardProps) => {
   const card: ConstellationCard = props.card as ConstellationCard
   const cardName = (card.front?.name === card.back?.name) ? card.front.name : `${card.front.name} / ${card.back.name}`
     return (
       <ConstellationCardsLayout meta={{title: cardName, description: `${cardName} card in Constellation Cards`}}>
-        <Container maxWidth="xl" disableGutters={false}>
+        <div>
             <h1>{cardName}</h1>
             <CardGrid cards={[card]} />
-        </Container>
+        </div>
       </ConstellationCardsLayout>
     );
   };

@@ -1,5 +1,4 @@
 import { ConstellationCard, ConstellationCardStack, getCards, getStacks } from "@constellation-cards/cards";
-import { Container } from "@mui/material";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { filter, find, includes, map, pluck, propEq } from "ramda";
 
@@ -14,10 +13,10 @@ interface StackProps {
 const StackPage: NextPage = (props: StackProps) => {
     return (
       <ConstellationCardsLayout meta={{title: props.stack?.name, description: `${props.stack?.name} stack in Constellation Cards`}}>
-        <Container maxWidth="xl" disableGutters={false}>
+        <div>
             <h1>{props?.stack?.name}</h1>
             <CardGrid cards={props.cards || []} />
-        </Container>
+        </div>
       </ConstellationCardsLayout>
     );
   };

@@ -2,8 +2,9 @@ import "../styles/globals.css";
 
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
-import CssBaseline from "@mui/material/CssBaseline";
 import Head from "next/head";
+
+import "./styles.sass"
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
@@ -11,7 +12,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <CssBaseline />
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>

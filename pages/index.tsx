@@ -1,5 +1,4 @@
 import type { GetStaticProps, NextPage } from "next";
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import {
   getDecks,
   getStacks,
@@ -8,16 +7,6 @@ import {
   ConstellationCardDeck,
   ConstellationCardStack
 } from "@constellation-cards/cards";
-import {
-  Box,
-  Container,
-  Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography
-} from "@mui/material";
 import {
   assoc,
   filter,
@@ -52,11 +41,11 @@ interface StackProps {
 
 const Stack = ({ stack, cards }: StackProps) => {
   return (
-    <Grid item xs={4} key={stack.uid}>
-      <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
+    <div key={stack.uid}>
+      <div>
         <Link href={`/stacks/${stack.uid}`}>{stack.name}</Link>
-      </Typography>
-      <List dense={false}>
+      </div>
+      <div>
         {map((cardUid) => {
           const card = cards[cardUid];
           const cardName: string =
@@ -64,16 +53,13 @@ const Stack = ({ stack, cards }: StackProps) => {
               ? card.front.name
               : `${card.front.name} / ${card.back.name}`;
           return (
-            <ListItem component={'a'} href={`/cards/${card.uid}`} key={card.uid}>
-              <ListItemAvatar>
-                <ArrowRightIcon />
-              </ListItemAvatar>
-              <ListItemText>{cardName}</ListItemText>
-            </ListItem>
+            <a href={`/cards/${card.uid}`} key={card.uid}>
+              <div>{cardName}</div>
+            </a>
           );
         }, stack.cards)}
-      </List>
-    </Grid>
+      </div>
+    </div>
   );
 };
 
@@ -86,21 +72,29 @@ const Deck = ({ deck, stacks, cards }: DeckProps) => {
   );
 
   return (
-    <Box>
+    <div>
       <h1>{deck.name}</h1>
 
-      <Grid container spacing={2} key={deck.uid}>
+      <div key={deck.uid}>
         {map(
           (stack) => (
             <Stack stack={stack} cards={cards} key={stack.uid} />
           ),
           values(stacksInThisDeck)
         )}
-      </Grid>
-    </Box>
+      </div>
+    </div>
   );
 };
 
+/**
+ * The site homepage. Shows a menu of cards.
+ * 
+ * TODO: refactor to use Bulma
+ * 
+ * @param props React properties
+ * @returns 
+ */
 const Home: NextPage = (props: HomeProps) => {
   const decks: Record<string, ConstellationCardDeck> = props.decks
     ? props.decks
@@ -114,14 +108,14 @@ const Home: NextPage = (props: HomeProps) => {
 
   return (
     <ConstellationCardsLayout meta={{title: 'Constellation Cards', description: 'The homepage of the Constellation Cards tabletop roleplaying game'}}>
-      <Container maxWidth="xl" disableGutters={false}>
+      <div>
         {map(
           (deck) => (
             <Deck deck={deck} stacks={stacks} cards={cards} key={deck.uid} />
           ),
           values(decks)
         )}
-      </Container>
+      </div>
     </ConstellationCardsLayout>
   );
 };

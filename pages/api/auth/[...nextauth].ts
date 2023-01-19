@@ -12,7 +12,7 @@ export default NextAuth({
       async authorize(credentials, _req) {
         if (credentials?.password === process.env.NEXTAUTH_PASSWORD) {
           const user = {
-            id: 1,
+            id: "1",
             name: credentials?.username,
             email: credentials?.username
           }
