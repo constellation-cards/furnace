@@ -1,6 +1,6 @@
 import Head from "next/head"
 
-import ConstellationCardsAppbar from "../components/ConstellationCardsAppbar"
+import ConstellationCardsAppbar from "./ConstellationCardsAppbar"
 
 // TODO: other SEO tags here?
 interface SupportedMetaTags {
@@ -22,7 +22,9 @@ export default function ConstellationCardsLayout(props: ConstellationCardsLayout
         </Head>
         <div>
             <ConstellationCardsAppbar />
-            {props.children}
+            <div className="container">
+                {props.children}
+            </div>
         </div>
         </>
     )

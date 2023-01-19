@@ -5,6 +5,7 @@ import CardFace from "./CardFace";
 
 interface CardProps {
   card: ConstellationCard;
+  isFlipped: boolean;
 }
 
 /**
@@ -13,8 +14,7 @@ interface CardProps {
  * 
  * TODO: allow actions to propagate through to CardFace
  */
-export default function Card({card}: CardProps) {
-  const isFlipped = true // TODO: get from card state
+export default function Card({card, isFlipped}: CardProps) {
   const face: ConstellationCardFace = (isFlipped) ? card.back : card.front
 
   return (

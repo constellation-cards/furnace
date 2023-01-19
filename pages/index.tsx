@@ -19,7 +19,7 @@ import {
   values
 } from "ramda";
 import Link from 'next/link'
-import ConstellationCardsLayout from "../src/ConstellationCardsLayout";
+import ConstellationCardsLayout from "../components/ConstellationCardsLayout";
 
 
 interface HomeProps {
