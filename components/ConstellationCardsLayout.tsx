@@ -10,6 +10,7 @@ interface SupportedMetaTags {
 
 interface ConstellationCardsLayoutProps {
     meta?: SupportedMetaTags
+    wrapInContent?: boolean;
     children?: JSX.Element
 }
 
@@ -23,7 +24,10 @@ export default function ConstellationCardsLayout(props: ConstellationCardsLayout
         <div>
             <ConstellationCardsAppbar />
             <div className="container">
-                {props.children}
+                <div className={props.wrapInContent ? "content" : ""}>
+                    {props.children}
+                </div>
+                <footer></footer>
             </div>
         </div>
         </>
