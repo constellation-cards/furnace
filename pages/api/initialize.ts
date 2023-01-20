@@ -1,87 +1,88 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getDecks, getStacks, getCards, ConstellationCardDeck, ConstellationCardStack, ConstellationCard } from '@constellation-cards/cards'
+// import { getSession } from "next-auth/react"
 
-import { PrismaClient, Prisma } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 async function insertDecks(decks: ConstellationCardDeck[]) {
-  // cards.json UID -> database UID
   const deckIdMapping: Record<string,string> = {}
 
   for (let deck of decks) {
-    const data: Prisma.DeckCreateInput = {
+    const result = await prisma.constellationCardDeck.create({data: {
       name: deck.name
-    }
-    const result = await prisma.deck.create({data})
-    deckIdMapping[deck.uid as string] = result.id
+    }})
+    deckIdMapping[deck.uid as string] = result.uid
   }
 
   return deckIdMapping
 }
 
 async function insertStacks(stacks: ConstellationCardStack[]) {
-  // cards.json UID -> database UID
   const stackIdMapping: Record<string,string> = {}
 
   for (let stack of stacks) {
-    const data: Prisma.StackCreateInput = {
+    const result = await prisma.constellationCardStack.create({data: {
       name: stack.name,
-      icons: stack.icons as string[]
-    }
-    const result = await prisma.stack.create({data})
-    stackIdMapping[stack.uid as string] = result.id
+      icons: [],
+      state: {}
+    }})
+    stackIdMapping[stack.uid as string] = result.uid
   }
 
   return stackIdMapping
 }
 
 async function insertCards(cards: ConstellationCard[], deckIdMapping: Record<string,string>, stackIdMapping: Record<string,string>) {
+  const newCards = []
   for (let card of cards) {
-    const data: Prisma.CardCreateInput = {
-      deck: {
-        connect: { id: deckIdMapping[card.deck] }
-      },
-      stack: {
-        connect: { id: stackIdMapping[card.stack] }
-      },
-      quantity: card.quantity,
+    const result = await prisma.constellationCard.create({data: {
+      deckId: deckIdMapping[card.deck],
+      stackId: stackIdMapping[card.stack],
       front: {
-        create: {
-          name: card.front.name,
-          backgroundImage: card.front.backgroundImage as string,
-          description: card.front.description,
-          prompts: card.front.prompts,
-          rule: card.front.rule
-        }
+        name: card.front.name,
+        backgroundImage: card.front.backgroundImage || undefined,
+        description: card.front.description,
+        prompts: card.front.prompts,
+        rule: card.front.rule
       },
       back: {
-        create: {
-          name: card.back.name,
-          backgroundImage: card.back.backgroundImage as string,
-          description: card.back.description,
-          prompts: card.back.prompts,
-          rule: card.back.rule
-        }
-      }
-    }
-    const result = await prisma.card.create({data})
+        name: card.back.name,
+        backgroundImage: card.back.backgroundImage || undefined,
+        description: card.back.description,
+        prompts: card.back.prompts,
+        rule: card.back.rule
+      },
+      quantity: card.quantity,
+      state: {}
+    }})
+    newCards.push(result)
   }
+  return newCards
 }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // const session = await getSession({ req })
+  // if (!session) {
+  //   res.status(401).send('Unauthorized')
+  //   throw new Error('UnauthorizedError')
+  // }
+
   if (req.method === 'POST') {
     try {
+      await prisma.$connect()
+
       const deckIdMapping = await insertDecks(getDecks())
       const stackIdMapping = await insertStacks(getStacks())
 
-      await insertCards(getCards(), deckIdMapping, stackIdMapping)
+      const newCards = await insertCards(getCards(), deckIdMapping, stackIdMapping)
 
-      res.status(200).json({deckIdMapping, stackIdMapping})
+      res.status(200).json({deckIdMapping, stackIdMapping, newCards})
     } catch (err) {
       res.status(500).json({err})
     } finally {

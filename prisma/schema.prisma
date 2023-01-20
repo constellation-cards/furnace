@@ -36,7 +36,7 @@ model ConstellationCard {
 
 type ConstellationCardFace {
   name              String
-  backgroundImage   String
+  backgroundImage   String?
   description       String
   prompts           String[]
   rule              String
