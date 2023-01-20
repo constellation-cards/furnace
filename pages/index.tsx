@@ -55,7 +55,7 @@ const Stack = ({ stack, cards }: StackProps) => {
               ? card.front.name
               : `${card.front.name} / ${card.back.name}`;
           return (
-            <span className={styles.card_list}>
+            <span className={styles.card_list} key={card.uid}>
               <Link href={`/cards/${card.uid}`} key={card.uid}>
                 {cardName}
               </Link>
