@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@constellation-cards/cards": "^1.1.1",
+    "@constellation-cards/cards": "^1.3.0",
     "@mdx-js/loader": "^2.2.1",
     "@next/mdx": "^13.1.2",
     "@prisma/client": "^4.9.0",
