@@ -31,6 +31,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 controller = prisma.constellationCardPresetSource
                 include = { preset: true }
                 break;
+            case "session":
+                controller = prisma.gameSession
+                break;
             default:
                 res.status(404).json({err: "Not Found"})
                 return;
@@ -38,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         let result;
 
-        // TODO: include preset sources in preset
+        // TODO: include preset sources in preset updates
 
         // if (req.method != "GET") {
         //   const session = await getSession({ req })
