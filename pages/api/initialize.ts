@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getDecks, getStacks, getCards, ConstellationCardDeck, ConstellationCardStack, ConstellationCard } from '@constellation-cards/cards'
+import { getDecks, getStacks, getCards, ConstellationCardDeck, ConstellationCardStack, ConstellationCard, getPresets, ConstellationCardPreset } from '@constellation-cards/cards'
 // import { getSession } from "next-auth/react"
 
 import { PrismaClient } from '@prisma/client'
@@ -63,6 +63,23 @@ async function insertCards(cards: ConstellationCard[], deckIdMapping: Record<str
   return newCards
 }
 
+async function insertPresets(presets: ConstellationCardPreset[], stackIdMapping: Record<string,string>) {
+  for (let preset of presets) {
+    const newPreset = await prisma.constellationCardPreset.create({data: {
+      name: preset.name,
+      description: preset.description
+    }})
+    for (let source of preset.sources) {
+      const newSource = await prisma.constellationCardPresetSource.create({data: {
+        presetId: newPreset.uid,
+        stackId: stackIdMapping[source.stack],
+        quantity: source.quantity,
+        flipRule: source.flipRule as string
+      }})
+    }
+  }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -81,6 +98,8 @@ export default async function handler(
       const stackIdMapping = await insertStacks(getStacks())
 
       const newCards = await insertCards(getCards(), deckIdMapping, stackIdMapping)
+
+      const newPresets = await insertPresets(getPresets(), stackIdMapping)
 
       res.status(200).json({deckIdMapping, stackIdMapping, newCards})
     } catch (err) {
