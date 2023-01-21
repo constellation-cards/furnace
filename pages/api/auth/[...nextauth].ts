@@ -1,30 +1,20 @@
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaClient } from "@prisma/client"
 import NextAuth from 'next-auth'
-import CredentialsProvider from "next-auth/providers/credentials"
+import DiscordProvider from "next-auth/providers/discord";
+
+const client = new PrismaClient()
 
 export default NextAuth({
+  adapter: PrismaAdapter(client),
   providers: [
-    CredentialsProvider({
-      name: 'Credentials',
-      credentials: {
-        username: { label: "Email address", type: "text" },
-        password: {  label: "Password", type: "password" }
-      },
-      async authorize(credentials, _req) {
-        if (credentials?.password === process.env.NEXTAUTH_PASSWORD) {
-          const user = {
-            id: "1",
-            name: credentials?.username,
-            email: credentials?.username
-          }
-          return user
-        } else {
-          return null
-        }
-      }
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID || "",
+      clientSecret: process.env.DISCORD_CLIENT_SECRET || ""
     })
   ],
   session: {
-    strategy: 'jwt' // or 'database'
+    strategy: 'database'
   },
   // pages: {} - see https://next-auth.js.org/configuration/options
 })
