@@ -1,12 +1,11 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { PrismaClient } from "@prisma/client"
 import NextAuth from 'next-auth'
 import DiscordProvider from "next-auth/providers/discord";
 
-const client = new PrismaClient()
+import prisma from "../../../components/prisma-client"
 
 export default NextAuth({
-  adapter: PrismaAdapter(client),
+  adapter: PrismaAdapter(prisma),
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID || "",

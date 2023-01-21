@@ -3,9 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getDecks, getStacks, getCards, ConstellationCardDeck, ConstellationCardStack, ConstellationCard, getPresets, ConstellationCardPreset } from '@constellation-cards/cards'
 // import { getSession } from "next-auth/react"
 
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import prisma from "../../components/prisma-client"
 
 async function insertDecks(decks: ConstellationCardDeck[]) {
   const deckIdMapping: Record<string,string> = {}

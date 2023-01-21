@@ -2,9 +2,8 @@ import { omit } from "ramda";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+import prisma from "../../components/prisma-client"
 
 type SecurityCheck = (req: NextApiRequest, res: NextApiResponse<any>) => Promise<void>
 
