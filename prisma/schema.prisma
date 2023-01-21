@@ -10,78 +10,80 @@ datasource db {
 // Constellation Cards models
 
 model ConstellationCardDeck {
-  uid               String                    @id @default(auto()) @map("_id") @db.ObjectId
-  name              String
-  cards             ConstellationCard[]
+  uid   String              @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  cards ConstellationCard[]
 }
 
 model ConstellationCardStack {
-  uid               String                    @id @default(auto()) @map("_id") @db.ObjectId
-  name              String
-  icons             String[]
-  cards             ConstellationCard[]
-  presetSources     ConstellationCardPresetSource[]
-  state             Json
+  uid           String                          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  icons         String[]
+  cards         ConstellationCard[]
+  presetSources ConstellationCardPresetSource[]
+  state         Json
 }
 
 model ConstellationCard {
-  uid               String                    @id @default(auto()) @map("_id") @db.ObjectId
-  deck              ConstellationCardDeck     @relation(fields: [deckId], references: [uid])
-  deckId            String                    @db.ObjectId
-  stack             ConstellationCardStack    @relation(fields: [stackId], references: [uid])
-  stackId           String                    @db.ObjectId
-  front             ConstellationCardFace
-  back              ConstellationCardFace
-  quantity          Int                       @default(1)
-  state             Json
+  uid      String                 @id @default(auto()) @map("_id") @db.ObjectId
+  deck     ConstellationCardDeck  @relation(fields: [deckId], references: [uid])
+  deckId   String                 @db.ObjectId
+  stack    ConstellationCardStack @relation(fields: [stackId], references: [uid])
+  stackId  String                 @db.ObjectId
+  front    ConstellationCardFace
+  back     ConstellationCardFace
+  quantity Int                    @default(1)
+  state    Json
 }
 
 type ConstellationCardFace {
-  name              String
-  backgroundImage   String?
-  description       String
-  prompts           String[]
-  rule              String
+  name            String
+  backgroundImage String?
+  description     String
+  prompts         String[]
+  rule            String
 }
 
 model ConstellationCardPreset {
-  uid               String                    @id @default(auto()) @map("_id") @db.ObjectId
-  name              String
-  description       String
-  sources           ConstellationCardPresetSource[]
+  uid         String                          @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  sources     ConstellationCardPresetSource[]
 }
 
 model ConstellationCardPresetSource {
-  uid               String                    @id @default(auto()) @map("_id") @db.ObjectId
-  preset            ConstellationCardPreset   @relation(fields: [presetId], references: [uid])
-  presetId          String                    @db.ObjectId
-  stack             ConstellationCardStack    @relation(fields: [stackId], references: [uid])
-  stackId           String                    @db.ObjectId
-  quantity          Int
-  flipRule          String
+  uid      String                  @id @default(auto()) @map("_id") @db.ObjectId
+  preset   ConstellationCardPreset @relation(fields: [presetId], references: [uid])
+  presetId String                  @db.ObjectId
+  stack    ConstellationCardStack  @relation(fields: [stackId], references: [uid])
+  stackId  String                  @db.ObjectId
+  quantity Int
+  flipRule String
 }
 
 model GameSession {
-  uid               String                    @id @default(auto()) @map("_id") @db.ObjectId
-  version           String
-  state             Json
+  uid     String @id @default(auto()) @map("_id") @db.ObjectId
+  owner   User   @relation(fields: [userId], references: [id])
+  version String
+  state   Json
+  userId  String @db.ObjectId
 }
 
 // Support for next-auth
 
 model Account {
-  id                  String                  @id @default(auto()) @map("_id") @db.ObjectId
-  userId              String                  @db.ObjectId
-  type                String
-  provider            String
-  providerAccountId   String
-  refresh_token       String?                 @db.String
-  access_token        String?                 @db.String
-  expires_at          Int?
-  token_type          String?
-  scope               String?
-  id_token            String?                 @db.String
-  session_state       String?
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -89,28 +91,29 @@ model Account {
 }
 
 model Session {
-  id                  String                  @id @default(auto()) @map("_id") @db.ObjectId
-  sessionToken        String                  @unique
-  userId              String                  @db.ObjectId
-  expires             DateTime
-  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id                  String                  @id @default(auto()) @map("_id") @db.ObjectId
-  name                String?
-  email               String?                 @unique
-  emailVerified       DateTime?
-  image               String?
-  accounts            Account[]
-  sessions            Session[]
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?       @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  gameSessions  GameSession[]
 }
 
 model VerificationToken {
-  id                  String                  @id @default(auto()) @map("_id") @db.ObjectId
-  identifier          String
-  token               String                  @unique
-  expires             DateTime
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
   @@unique([identifier, token])
 }
