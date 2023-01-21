@@ -27,7 +27,7 @@ export default async function handler(
     const [model, uid] = req.query.crud as string[];
 
     let controller,
-      include = {},
+      include,
       securityCheck: SecurityCheck | undefined = sessionSecurityCheck;
 
     switch (model) {
@@ -42,11 +42,11 @@ export default async function handler(
         break;
       case "preset":
         controller = prisma.constellationCardPreset;
-        include = { sources: true };
+        include = {include: { sources: true }};
         break;
       case "presetSource":
         controller = prisma.constellationCardPresetSource;
-        include = { preset: true };
+        include = {include: { preset: true }};
         break;
       case "session":
         controller = prisma.gameSession;
@@ -66,33 +66,34 @@ export default async function handler(
 
     // TODO: check JWT token for session controller, as they won't have a normal session?
 
-    if (securityCheck) {
+    if (securityCheck && process.env.NODE_ENV === "production") {
         securityCheck(req, res)
     }
 
     switch (req.method) {
       case "GET":
         if (uid) {
-          result = await controller.findUnique({ where: { uid }, include });
+          result = await controller.findUnique({ where: { uid }, ...include });
         } else {
-          result = await controller.findMany({ include });
+          result = await controller.findMany({ ...include });
         }
         break;
       case "POST":
         result = await controller.create({
           data: omit(["uid"], req.body),
-          include
+          ...include
         });
         break;
       case "PUT":
+      case "PATCH":
         result = await controller.update({
           where: { uid },
           data: omit(["uid"], req.body),
-          include
+          ...include
         });
         break;
       case "DELETE":
-        result = await controller.delete({ where: { uid }, include });
+        result = await controller.delete({ where: { uid }, ...include });
         break;
       default:
         throw new Error("Not Implemented");
