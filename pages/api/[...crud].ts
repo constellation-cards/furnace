@@ -47,8 +47,8 @@ export default async function handler(
         controller = prisma.constellationCardPresetSource;
         include = {include: { preset: true }};
         break;
-      case "session":
-        controller = prisma.gameSession;
+      case "table":
+        controller = prisma.gameTable;
         break;
       default:
         res.status(404).json({ err: "Not Found" });

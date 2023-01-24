@@ -1,20 +1,20 @@
 import type { NextPage } from "next";
 import ConstellationCardsLayout from "../../components/ConstellationCardsLayout";
 import useSWR, { KeyedMutator } from "swr";
-import { GameSession } from "@prisma/client";
+import { GameTable } from "@prisma/client";
 import { map } from "ramda";
 
 interface PlayHomeProps {}
 
-const fetchSessions = (): Promise<GameSession[]> =>
-  fetch("/api/session").then((res) => res.json());
+const fetchTables = (): Promise<GameTable[]> =>
+  fetch("/api/table").then((res) => res.json());
 
-function Session({ session, mutate }: { session: GameSession, mutate: KeyedMutator<GameSession[]> }) {
+function GameTable({ table, mutate }: { table: GameTable, mutate: KeyedMutator<GameTable[]> }) {
   return (
     <div className="card">
       <div className="card-content">
         <p className="title">
-          {session.title} <span className="tag is-info">{session.version}</span>
+          {table.title} <span className="tag is-info">{table.version}</span>
         </p>
       </div>
       <footer className="card-footer">
@@ -41,11 +41,11 @@ function Session({ session, mutate }: { session: GameSession, mutate: KeyedMutat
  */
 const PlayHome: NextPage = (props: PlayHomeProps) => {
   const {
-    data: gameSessions,
+    data: gameTables,
     error,
     isLoading,
     mutate
-  } = useSWR("/api/user/123", fetchSessions);
+  } = useSWR("/api/user/123", fetchTables);
   return (
     <ConstellationCardsLayout
       meta={{
@@ -54,10 +54,12 @@ const PlayHome: NextPage = (props: PlayHomeProps) => {
       }}
     >
       <>
-        {isLoading && <h1 className="title">Loading...</h1>}
-        {error && <h1 className="title">Error loading data</h1>}
-        {gameSessions &&
-          map((session) => <Session session={session} mutate={mutate} />, gameSessions || [])}
+        {isLoading ? <h1 className="title">Loading...</h1> : <></>}
+        {error ? <h1 className="title">Error loading data</h1> : <></>}
+        {gameTables ?
+          map((table) => <GameTable table={table} mutate={mutate} />, gameTables || [])
+          : <></>
+        }
       </>
     </ConstellationCardsLayout>
   );
