@@ -63,10 +63,11 @@ model ConstellationCardPresetSource {
 
 model GameSession {
   uid     String @id @default(auto()) @map("_id") @db.ObjectId
-  owner   User   @relation(fields: [userId], references: [id])
+  title   String
+  //owner   User   @relation(fields: [userId], references: [id])
   version String
   state   Json
-  userId  String @db.ObjectId
+  //userId  String @db.ObjectId
 }
 
 // Support for next-auth
@@ -106,7 +107,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  gameSessions  GameSession[]
+  //gameSessions  GameSession[]
 }
 
 model VerificationToken {

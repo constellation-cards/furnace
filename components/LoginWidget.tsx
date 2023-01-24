@@ -2,7 +2,7 @@ import { Session } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Gravatar from "react-gravatar";
 
-import styles from "../styles/LoginWidget.module.sass"
+// import styles from "../styles/LoginWidget.module.sass"
 
 function UserImage({session}: {session: Session}) {
   // return (session?.user?.image) ? <img src={session.user.image} className={styles.discordImage} /> : <Gravatar email={session?.user?.email || undefined} />
