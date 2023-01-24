@@ -9,6 +9,19 @@ interface PlayHomeProps {}
 const fetchTables = (): Promise<GameTable[]> =>
   fetch("/api/table").then((res) => res.json());
 
+async function deleteTable(table: GameTable, mutate: KeyedMutator<GameTable[]>) {
+  if (confirm("Are you sure you want to delete this object?")) {
+    try {
+      const result = await fetch(`/api/table/${table.uid}`, {
+        method: "DELETE"
+      })
+      mutate()  
+    } catch (e) {
+      alert(e)
+    }
+  }
+} 
+
 function GameTable({ table, mutate }: { table: GameTable, mutate: KeyedMutator<GameTable[]> }) {
   return (
     <div className="card">
@@ -18,14 +31,18 @@ function GameTable({ table, mutate }: { table: GameTable, mutate: KeyedMutator<G
         </p>
       </div>
       <footer className="card-footer">
-      <p className="card-footer-item">
-          Play
+        <p className="card-footer-item">
+          <a className="button is-primary" href={`/play/${table.uid}`}>
+            Play
+          </a>
         </p>
         <p className="card-footer-item">
           Rename
         </p>
         <p className="card-footer-item">
-          Delete
+          <button className="button is-danger" onClick={() => deleteTable(table, mutate)}>
+            Delete
+          </button>
         </p>
       </footer>
     </div>
@@ -60,6 +77,7 @@ const PlayHome: NextPage = (props: PlayHomeProps) => {
           map((table) => <GameTable table={table} mutate={mutate} />, gameTables || [])
           : <></>
         }
+        {gameTables?.length ? <></> : <h1>No game tables</h1>}
       </>
     </ConstellationCardsLayout>
   );
