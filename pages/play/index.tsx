@@ -3,6 +3,7 @@ import ConstellationCardsLayout from "../../components/ConstellationCardsLayout"
 import useSWR, { KeyedMutator } from "swr";
 import { GameTable } from "@prisma/client";
 import { map } from "ramda";
+import { useState } from "react";
 
 interface PlayHomeProps {}
 
@@ -21,6 +22,27 @@ async function deleteTable(table: GameTable, mutate: KeyedMutator<GameTable[]>) 
     }
   }
 } 
+
+async function createTable(tableName: string, mutate: KeyedMutator<GameTable[]>) {
+  const body = {
+    title: tableName,
+    version: "new",
+    state: {}
+  }
+
+  try {
+    const result = await fetch('/api/table', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+    mutate()
+  } catch (e) {
+    alert(e)
+  }
+}
 
 function GameTable({ table, mutate }: { table: GameTable, mutate: KeyedMutator<GameTable[]> }) {
   return (
@@ -47,6 +69,27 @@ function GameTable({ table, mutate }: { table: GameTable, mutate: KeyedMutator<G
       </footer>
     </div>
   );
+}
+
+function NewGameTable({mutate}: {mutate: KeyedMutator<GameTable[]>}) {
+  const [tableName, setTableName] = useState<string>("")
+  
+  return (
+    <div className="card">
+      <div className="card-content">
+        <p className="title">
+          <input className="input" type="text" placeholder="New table name" value={tableName} onChange={(event) => setTableName(event.target.value)} />
+        </p>
+      </div>
+      <footer className="card-footer">
+        <p className="card-footer-item">
+          <button className="button is-danger" onClick={() => createTable(tableName, mutate)}>
+            Create
+          </button>
+        </p>
+      </footer>
+    </div>
+  )
 }
 
 /**
@@ -77,7 +120,8 @@ const PlayHome: NextPage = (props: PlayHomeProps) => {
           map((table) => <GameTable table={table} mutate={mutate} />, gameTables || [])
           : <></>
         }
-        {gameTables?.length ? <></> : <h1>No game tables</h1>}
+        {!isLoading && !gameTables?.length ? <h1 className="title">No game tables</h1> : <></>}
+        {!isLoading && !error ? <NewGameTable mutate={mutate} /> : <></>}
       </>
     </ConstellationCardsLayout>
   );
